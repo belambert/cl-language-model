@@ -1,0 +1,90 @@
+;;;; Author: Benjamin E. Lambert
+;;;; ben@benjaminlambert.com
+
+(in-package :language-model)
+(declaim (optimize (debug 3)))
+
+(defparameter *dependency-extension* ".parsed.gz" 
+  "The name of an nbest list after POS tagging and dependency parsing.")
+
+(defclass evaluable ()
+  ()
+  (:documentation   "This is something we can compute a WER for... in particular a sentence or n-best list."))
+
+(defclass* sentence-sparse (evaluable)
+  ((total-score nil ira "" :type (or null single-float))
+   (model-score 0.0d0 ira "" :type double-float)
+   (combined-score nil ira "" :type (or null double-float))
+   ;; More compact 'features' of the sentence
+   (features nil ira "" :type '(or null (simple-array fixnum)))                       ;;; this is an array of fixnums.
+   (active-features nil ira "" :type '(or null (simple-array fixnum)))                ;;; this is an array of fixnums.
+   (evaluation nil ira)
+   ;; I want to get rid of the evalution objects for sparsely represented
+   ;; sentences... but maybe that's too complicated.
+   ;;(errors nil ir "" :type '(or null fixnum))
+   ;;(reference-length nil ir "" :type '(or null fixnum))
+   )
+  (:automatic-accessors t)
+  (:name-prefix "sentence" "-")
+  (:automatic-initargs t)
+  (:documentation "A *sparse* representation of a 'sentence' or utterance, possibly ASR output or from a ref transcript."))
+
+(defun sentence->sentence-sparse (s)
+  "This creates a new instance of a sparse sentence, copying sparse values."
+  (make-instance 'sentence-sparse
+		 :total-score (sentence-total-score s)
+		 :model-score (sentence-model-score s)
+		 ;;:acoustic-score (sentence-acoustic-score s)
+		 :combined-score (sentence-combined-score s)
+		 :features (sentence-features s)
+		 :evaluation (sentence-evaluation s)))
+
+(defclass* sentence (sentence-sparse)
+  ((example-id nil ira) ;; rename this to something like "id"?
+   ;; ASR-related scores
+   ;;(log-base 1.0001 ira)
+   (lm-score nil);; ira ""  :type (or null number))
+   ;; the actual words, represented in several ways
+   (words nil) ;; ira "") ;; ("ONE" "SOUL" "TO" "MORNING" "LAST" "JUNE"
+   pos-tags
+   (segmented-words nil)
+   (dependencies nil ira)   
+   ;; Should we keep these separate?
+   (patterns nil ira)
+   (lexical-patterns nil ira)
+   (non-lexical-patterns nil ira)
+   )
+  (:automatic-accessors t)
+  (:name-prefix "sentence" "-")
+  (:automatic-initargs t)
+  (:documentation "Represents a 'sentence' or utterance, possiblye ASR output or from a ref transcript."))
+
+;;; TODO - For some reason the first sentence is losing it's dependency relations...
+
+(defun read-sentences (filename &key conll-filename)
+  "Read a file the contains one transcription per line, followed by an ID in parens, into a list of lists."
+  (let* ((sentences '())
+	 (dependency-filename (if conll-filename
+				  conll-filename
+				  (concatenate 'string (base-filename filename) *dependency-extension*)))
+	 (dependencies (when (probe-file dependency-filename)
+			 (read-conll-file dependency-filename))))
+    (bl:do-lines (line filename)
+      (unless (string-equal line "")
+	(let* ((str-length (length line))
+	       (begin-id (position #\( line :from-end t))
+	       (example-id (when begin-id (subseq line (1+ begin-id) (1- str-length))))
+	       (transcript (subseq line 0 (or begin-id (length line))))
+	       ;; The token boundaries are determined by spaces...
+	       (tokens (split-sequence:split-sequence #\Space transcript :remove-empty-subseqs t)))
+	  (map-into tokens 'bl:get-cached-string tokens)
+	  (alexandria:coercef tokens 'vector)
+	  ;;(setf example-id (get-cached-string example-id))
+	  (push
+	   (make-instance 'sentence :words tokens :example-id example-id)
+	   sentences))))
+    (setf sentences (nreverse sentences))
+    (mapc 'copy-dependency-to-sentence dependencies sentences)
+    sentences))
+
+

@@ -1,8 +1,7 @@
-;;;; Author: Benjamin E. Lambert
-;;;; ben@benjaminlambert.com
+;;;; Benjamin E. Lambert (ben@benjaminlambert.com)
 
 (declaim (optimize (debug 3)))
-(in-package :cl-lm)
+(in-package :language-model)
 (cl-user::file-summary "Input and output of language models and vocabularies")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

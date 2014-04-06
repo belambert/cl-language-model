@@ -1,5 +1,4 @@
-;;;; Author: Benjamin E. Lambert
-;;;; ben@benjaminlambert.com
+;;;; Benjamin E. Lambert (ben@benjaminlambert.com)
 
 (in-package :language-model)
 (declaim (optimize (debug 3)))

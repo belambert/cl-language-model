@@ -1,7 +1,7 @@
 ;;;; Benjamin E. Lambert (ben@benjaminlambert.com)
 
 (defpackage :language-model
-  (:nicknames :cl-lm)
+  (:nicknames :lm)
   (:use :common-lisp :alexandria :split-sequence :blambert-util )
   (:import-from :metatilities :defclass* :defclass-brief)
   (:export :score

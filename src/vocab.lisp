@@ -1,4 +1,3 @@
-;;-*- Mode: Lisp -*-
 ;;;; Benjamin E. Lambert (ben@benjaminlambert.com)
 
 (in-package :language-model)

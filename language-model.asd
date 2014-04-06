@@ -28,5 +28,6 @@
 			:cl-fad
 			:metatilities
 			:ieee-floats
-			:pos-tagger ))
+			;;:pos-tagger
+			))
 

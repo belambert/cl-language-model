@@ -1,20 +1,10 @@
-;;;; Benjamin E. Lambert (ben@benjaminlambert.com)
+;;;; Ben Lambert (ben@benjaminlambert.com)
 
 (in-package :language-model)
-(declaim (optimize (debug 3)))
-
-(cl-user::file-summary "Managing and choosing vocabs of words and concepts. [NEEDS WORK?]")
-
-;; It's really important to not be printing namespaces.
-;;(setf cl-user::*print-namespace* :maybe)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;; Global vocab variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Global vocabulary")
-
-(cl-user::subsection "Global vocab structs")
 
 (defstruct vocab
   "A new struct to replace the six global variables below."
@@ -42,8 +32,6 @@
 ;;;;;;; Un-register common words from the KB ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(cl-user::subsection "Un-register common words from the KB")
-
 (defvar *pronoun-unregister-list* (list "a" "the" "i" "me" "myself" "you" "yourself" "he" "she" "him" "her" "himself" "herself" "we" "us" "ourselves" "they" "them" "themselves" "it" "itself" "what" "that" "where" "is" "be")
   "A hard-coded list of strings to un-register from the KB")
 
@@ -60,9 +48,6 @@
 	(cl-user::unregister-definition word e)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(cl-user::subsection "Global vocab accessors")
-
-;;; I don't believe I'm actually using these anywhere right now (4/16/11)
 
 (defun get-global-word-id (word)
   "Get the numerical id for a word."
@@ -90,9 +75,6 @@
 (defun get-global-shared-from-id (id)
   "Get the concept corresponding to a numerical concept ID."
   (elt (vocab-concepts (vocab-combined *global-vocab*)) id))
-
-
-;; TODO - these are ugly...
 
 (defun get-global-word-vocab-id (word)
   "Get the numerical id for a word."
@@ -124,10 +106,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;; Active vocabulary setup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Active vocabulary setup")
-
-(cl-user::todo "word or concept vocab should be optional")
 
 (defun get-vocab-list-and-table (filename)
   "Given a frequency file filename, read and return two values: a list of the vocab items, and a table mapping from vocab to id's."
@@ -163,8 +141,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;; Misc...  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Misc...")
 
 (defun count-vocab-in-kb ()
   "Count the number of word in the current active vocabulary that are in the loaded KB."
@@ -218,8 +194,6 @@
 ;;;;; Counting words ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(cl-user::section "Counting words/concepts & frequency files")
-
 (defun text->wfreq (transcript-filename wfreq-filename)
   "The is the main function for turning a text file into a wfreq file."
   (let ((freq-list (count-file-tokens transcript-filename)))
@@ -256,21 +230,15 @@
 ;;;;; Frequencies to vocabularies ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(cl-user::section "Frequencies to vocabularies")
-
 (defun freq-file->vocab-file (freq-file vocab-file &key (prune-head 200) (min-count 2) (top-n nil))
   "Convert a frequency file to a vocab file, by performing the specified pruning."
   (let ((freq-list (read-frequency-file freq-file)))
     (setf freq-list (prune-freq-count-list freq-list :prune-head prune-head :top-n top-n :min-count min-count))
     (print-frequency-file freq-list vocab-file)))
 
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;; Counting words and concepts in text. ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Counting words and concepts in text.")
 
 (defun word-is-reasonable? (word)
   "Check if the length of a word is less than 50 characters, and contains
@@ -373,6 +341,3 @@
        for count = (second freq-pair)
        for origin-list = (gethash word origin-table) do
 	 (format file "~A ~A tokens, from ~A word types -- ~{~{~A ~}~}~%" word count (length origin-list) origin-list))))
-
-
-

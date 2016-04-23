@@ -1,14 +1,10 @@
-;;;; Benjamin E. Lambert (ben@benjaminlambert.com)
+;;;; Ben Lambert (ben@benjaminlambert.com)
 
-(declaim (optimize (debug 3)))
 (in-package :language-model)
-(cl-user::file-summary "CLOS classes for the major LM types")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; General data structures and parameters  ;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Misc helper functions")
 
 (defun word-seq->word-and-history (seq)
   "Convert a word sequence into two parts: a word, and a history.  Used by the n-gram model."
@@ -19,8 +15,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;; General class and methods for all LMs ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "General class and methods for all LMs")
 
 (defclass* lm ()
   ((log-base 10 ia :accessor lm-log-base	:initarg :lm-log-base "The base to use for logarithms.  We've been using 2.")
@@ -33,16 +27,11 @@
    (oov-token "<unk>" ir  "The desginated token that replaces OOVs, usually '&ltunk&gt'."))
   (:documentation "A language model - computes probabilities of words or sentences."))
 
-
-(cl-user::subsection "Constructor")
-
 (defmethod initialize-instance :after ((lm lm) &key)
   "The constructor for the general LM class. This ensures that the vocabulary is in a vector/array, and it loads the pre-loaded samples when specified.
    This doesn't get lispdoc'ed b/c the :after throws things off."
   (when (vocab lm) ;; Make sure the vocab is a vector
     (set-vocab lm (coerce (vocab lm) 'vector))))
-
-(cl-user::subsection "Generic LM methods")
 
 (defgeneric save-model (lm filename &key) (:documentation "Save an LM to a file."))
 (defgeneric substitute-oovs (lm word-list) (:documentation "Replace any OOV words with the designated OOV token."))
@@ -52,9 +41,6 @@
 (defgeneric get-word-id (lm word) (:documentation "Get the numerical ID of the given word"))
 (defgeneric get-word-id-adding (lm word) (:documentation "Get the numerical ID of the given word.  And add it to the vocab if it's not already there."))
 (defgeneric add-word-to-vocab (lm word) (:documentation "Add a word to the LM's vocabulary."))
-
-
-(cl-user::subsection "Implemented methods -- vocabulary-related.")
 
 (defmethod in-vocab-p ((lm lm) word)
   "Check if the given word is in the vocabulary."
@@ -95,14 +81,9 @@
 ;;;;; Whole-sentence LMs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(cl-user::section "Generic <b>whole sentence</b> models")
-
 (defclass sentence-lm (lm)
-  ()
-  (:documentation "A whole-sentence LM, computes (log) probabilities of entire sentences.  
-    All(?) of the other models are subclasses of this (since they can all assign a prob to a full sentence)"))
-
-(cl-user::subsection "Generic methods")
+  () (:documentation "A whole-sentence LM, computes (log) probabilities of entire sentences.  
+      All(?) of the other models are subclasses of this (since they can all assign a prob to a full sentence)"))
 
 ;;; We do not include a non-log prob function here, because sentence probabilities are so low.
 (defgeneric log-prob-of-sentence (sentence-lm sentence)
@@ -123,14 +104,10 @@
 ;;;;; Conditional LMs -- more specific than whole-sentence  ;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(cl-user::section "General <b>conditional</b> language models -- the model word probs and are more specific than whole-sentence models")
-
 (defclass* conditional-lm (sentence-lm)
   ((history-length nil a)
    (order nil ia))
   (:documentation "A conditional LM model the probability of the next word, given the preceding words."))
-
-(cl-user::subsection "Generic methods")
 
 (defgeneric prob-of-word (conditional-lm word history)
   (:documentation "Probability of next word given a list of words before it."))
@@ -146,8 +123,6 @@
 
 (defgeneric generate-word (conditional-lm history)
   (:documentation "Randomly generate the next word given the history."))
-
-(cl-user::subsection "Implemented methods")
 
 ;; These two are mutually defined....  so, a model must implement one or the other, or both.
 (defmethod prob-of-word ((lm conditional-lm) word history)
@@ -183,11 +158,8 @@
   "Given a conditional LM and a sentence, compute the LL of the entire sentence."
   (log-prob-of-sentence lm (sentence-segmented-words sentence)))
 
-(cl-user::todo "Optimize the next function.")
-
 (defmethod log-prob-of-sentence ((lm conditional-lm) (sentence vector))
   "Given a conditional LM and a sentence, compute the LL of the entire sentence."
-  ;;(declare (optimize (speed 3)))
   (setf sentence (coerce sentence 'cons))
   (let* ((log-prob-sum 0.0)
 	 (words sentence))
@@ -200,16 +172,12 @@
 			       0)
        for history = (subseq words begin-history i)
        for log-prob = (log-prob-of-history lm history) do
-	 ;;(pprint history)
-	 ;;(format t "~A ~F " (last-elt history) log-prob)       
 	 (incf log-prob-sum log-prob))
     log-prob-sum))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;; UNIFORM ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Uniform LM")
 
 (defclass* uniform-lm (conditional-lm)
   ((history-length 0)
@@ -226,10 +194,8 @@
 (defmethod prob-of-word ((lm uniform-lm) word history)
   "Get the uniform prob of a word, which = 1/vocab_size."
   (declare (ignore history))
-  (assert (gethash word (vocab-table lm))) ;;... make sure the word is in the vocab...??
+  (assert (gethash word (vocab-table lm))) ;; Make sure the word is in the vocab.
   (/ 1.0 (vocab-size lm)))
-
-(cl-user::todo "Rationalize these two function calls???!!")
 
 (defmethod prob-of-history ((lm uniform-lm) history)
   (prob-of-word lm (first (last history)) nil))
@@ -241,25 +207,14 @@
 ;;;;; Instantiable conditional models  -- Ngram and uniform ;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(cl-user::section "N-gram conditional models.")
-
 (defclass* ngram-lm (conditional-lm)
-  ()
-  (:documentation "A conditional LM where the prob of a word depends only on the previous n words."))
+  () (:documentation "A conditional LM where the prob of a word depends only on the previous n words."))
 
-
-(cl-user::subsection "Generic functions")
-
-(cl-user::subsubsection "Implemented generic functions")
-
-;;; These are implemented at this level:
 (defgeneric log-3gram-prob (ngram-lm 3-gram)
   (:documentation "Get a probability for the 3-gram.  Back-off if necessary."))
 
 (defgeneric log-2gram-prob (ngram-lm 2-gram)
   (:documentation "Get a probability for the 2-gram.  Back-off if necessary."))
-
-(cl-user::subsubsection "Non-Implemented generic functions -- subclasses must implement")
 
 ;;; These are NOT implemented at this level, and must be implemented by subclasses
 (defgeneric log-1gram-prob (ngram-lm 1-gram)
@@ -277,8 +232,7 @@
 (defgeneric 2gram-bow-internal (ngram-lm 2-gram)
   (:documentation "Get the bow for the 2-gram."))
 
-(cl-user::subsection "Implemented methods")
-
+;;; Implemented methods
 (defmethod generate-word ((lm ngram-lm) history)
   "Randomly generate a word given the history."
   (sample-ngram (history-length lm) history lm))
@@ -292,7 +246,7 @@
 (defmethod log-prob-of-history ((lm ngram-lm) history)
   "The method that actually gets the n-gram probability, by calling out to the code in ngram.lisp."
   (declare (optimize (speed 3)))
-  (setf history (substitute-oovs lm history))  ;;replace OOVs with the OOV token here!
+  (setf history (substitute-oovs lm history))  ;; replace OOVs with the OOV token here
   (let ((log-prob (ngram-lm-log-prob history lm)))
     (if (= 10 (lm-log-base lm))
 	log-prob

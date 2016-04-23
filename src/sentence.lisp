@@ -1,14 +1,12 @@
-;;;; Benjamin E. Lambert (ben@benjaminlambert.com)
+;;;; Ben Lambert (ben@benjaminlambert.com)
 
 (in-package :language-model)
-(declaim (optimize (debug 3)))
 
 (defparameter *dependency-extension* ".parsed.gz" 
   "The name of an nbest list after POS tagging and dependency parsing.")
 
 (defclass evaluable ()
-  ()
-  (:documentation   "This is something we can compute a WER for... in particular a sentence or n-best list."))
+  () (:documentation   "This is something we can compute a WER for... in particular a sentence or n-best list."))
 
 (defclass* sentence-sparse (evaluable)
   ((total-score nil ira "" :type (or null single-float))
@@ -17,12 +15,7 @@
    ;; More compact 'features' of the sentence
    (features nil ira "" :type '(or null (simple-array fixnum)))                       ;;; this is an array of fixnums.
    (active-features nil ira "" :type '(or null (simple-array fixnum)))                ;;; this is an array of fixnums.
-   (evaluation nil ira)
-   ;; I want to get rid of the evalution objects for sparsely represented
-   ;; sentences... but maybe that's too complicated.
-   ;;(errors nil ir "" :type '(or null fixnum))
-   ;;(reference-length nil ir "" :type '(or null fixnum))
-   )
+   (evaluation nil ira))
   (:automatic-accessors t)
   (:name-prefix "sentence" "-")
   (:automatic-initargs t)
@@ -51,14 +44,11 @@
    ;; Should we keep these separate?
    (patterns nil ira)
    (lexical-patterns nil ira)
-   (non-lexical-patterns nil ira)
-   )
+   (non-lexical-patterns nil ira))
   (:automatic-accessors t)
   (:name-prefix "sentence" "-")
   (:automatic-initargs t)
   (:documentation "Represents a 'sentence' or utterance, possiblye ASR output or from a ref transcript."))
-
-;;; TODO - For some reason the first sentence is losing it's dependency relations...
 
 (defun read-sentences (filename &key conll-filename)
   "Read a file the contains one transcription per line, followed by an ID in parens, into a list of lists."

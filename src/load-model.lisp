@@ -1,15 +1,10 @@
-;;;; Benjamin E. Lambert (ben@benjaminlambert.com)
+;;;; Ben Lambert (ben@benjaminlambert.com)
 
-(declaim (optimize (debug 3)))
 (in-package :language-model)
-(cl-user::file-summary "Input and output of language models and vocabularies")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;; LM I/O ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "LM I/O")
-(cl-user::subsection "LM input")
 
 (defun load-model (filename &key type vocab feature-gain)
   "Load a model from a file.  Since we don't have a CLOS object a priori, this is just a regular function.
@@ -29,8 +24,7 @@
 	    ((string-equal file-ext "simple")
 	     (setf type :pattern))
 	    ((string-equal file-ext "model")
-	     (setf type :pattern))
-	    )))
+	     (setf type :pattern)))))
   (let ((model (case type
 		 (:ngram-arpa (make-instance 'ngram-lm-arpa :filename filename))
 		 (:ngram-dmp (ngram-model-dmp-read filename))
@@ -53,12 +47,9 @@
   "Given an array and a hashtable, turn the hashtable into an index of the array indicies."
   (array->id-table array ht))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;; SIMPLE LM I/O   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::subsection "Simple LM model I/O")
 
 (defun load-pattern-lm (filename)
   "Load a 'simple' LM."

@@ -1,16 +1,10 @@
-;;;; Benjamin E. Lambert (ben@benjaminlambert.com)
+;;;; Ben Lambert (ben@benjaminlambert.com)
 
-(declaim (optimize (debug 3)))
 (in-package :language-model)
-
-(cl-user::file-summary "General language modeling -- probability streams and perplexity.")
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;; Probability streams   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Probability streams")
 
 (defun prob-stream-ppl (s &key (base 2) (already-log-probs nil))
   "Compute and print the PPL,etc. of a probability stream."
@@ -20,7 +14,6 @@
 (defun prob-stream (data lm &key (probability-function 'prob-of-lm-example))
   "Get the n-gram model's prob stream for the loaded data."
   (let ((prob-list '()))
-    ;;(loop for example across data
     (loop for example in data
        for prob = (coerce (funcall probability-function lm example) 'single-float) do
 	 (assert (> prob 0.0))
@@ -58,12 +51,9 @@
 	     )))
     prob-stream))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;; Perplexity computation   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Perplexity computation")
 
 (defstruct prob-stream-stats
   "Represents PPL, LL, etc."
@@ -82,7 +72,7 @@
 	  (incf ll p)
 	  (incf ll (log p base))))
     ;; Compute the stats we're interested in
-    (let* ((all (if (/= (length s) 0)  ;; look like we're getting a zero/zero here 11-15-10..
+    (let* ((all (if (/= (length s) 0)
 		    (/ ll (length s))
 		    0.0))
 	   (likelihood (expt base ll))
@@ -149,4 +139,3 @@
   (multiple-value-bind (prob-stream word-count)
       (whole-sentence-log-prob-stream sentences sentence-model)
     (whole-sentence-prob-stream-ppl prob-stream word-count)))    
-

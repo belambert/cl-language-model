@@ -1,10 +1,10 @@
 ;;-*- Mode: Lisp -*-
-;;;; Benjamin E. Lambert (ben@benjaminlambert.com)
+;;;; Ben Lambert (ben@benjaminlambert.com)
 
 (asdf:defsystem "language-model"
-  :description "Common Lisp langauge modeling"
+  :description "Common Lisp language modeling"
   :version "0.1.0"
-  :author "Benjamin Lambert"
+  :author "Ben Lambert"
   :licence "All rights reserved"
   :serial t
   :components
@@ -27,7 +27,5 @@
 			:array-operations
 			:cl-fad
 			:metatilities
-			:ieee-floats
-			;;:pos-tagger
-			))
+			:ieee-floats))
 

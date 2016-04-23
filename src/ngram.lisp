@@ -1,37 +1,28 @@
-;;;; Benjamin E. Lambert (ben@benjaminlambert.com)
+;;;; Ben Lambert (ben@benjaminlambert.com)
 
-(declaim (optimize (debug 3)))
 (in-package :language-model)
-(cl-user::file-summary "N-gram language modeling")
 
 ;;;; It seems that saving the word sequences as vectors doesn't really save us much RAM space
 ;;;; over lists (I guess because they are so short), so the overhead of keeping a pointer to the
 ;;;; end of the array destroys any gain we get from using arrays rather then lists
-
 ;;;; So, it seems there aren't any quick and easy ways to reduce the memory footprint, 
 ;;;; without major changes.  We could perhaps make some drastic changes to how everything is stored
 ;;;; in memory to get some gains... e.g. totally changing the hash table keys strategy, or
 ;;;; getting rid of hash tables entirely, or memory mapping the LM as a DMP file
-
-;;;; For now, it's probably easier to just use smaller LMs or bigger machines (e.g. scone2)
-
+;;;; For now, it's probably easier to just use smaller LMs or bigger machines.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;; Class definition ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(cl-user::section "Class definition")
-
 (defparameter *default-ngram-table-size*
   16
-  ;;50000
-  ;;6000000
   "The initial size of the ngram LM hash tables.  This is used for each of the 
    prob table, backoff table, and sampling table.  So, the initial value really shouldn't
    be bigger than any one of those.  Thus, if we're not doing sampling...")
 
-;; These are easily going to take up a huge amount of memory, e.g. 1GB, since the probability and backoff tables will be
-;; very large (e.g. 3 million entries)
+;; These are easily going to take up a huge amount of memory, e.g. 1GB,
+;; since the probability and backoff tables will be very large (e.g. 3 million entries)
 (defclass* ngram-lm-arpa (ngram-lm)
   ((probability-table (make-hash-table :test 'equalp :size *default-ngram-table-size*) i :reader ngram-lm-arpa-probability-table)
    (backoff-table     (make-hash-table :test 'equalp :size *default-ngram-table-size*) i :reader ngram-lm-arpa-backoff-table)
@@ -61,8 +52,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;; Loading and initializing an n-gram model from an ARPA file ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Loading and initializing an n-gram model from an ARPA file")
 
 (defun remove-last-list-elt (list)
   "Remove the last elt of a list without consing (i.e. without calling SUBSEQ)."
@@ -110,10 +99,8 @@
 	   (order (parse-integer order-char)))
       order)))
   
-;; All the consing happens in here...
 (defun read-arpa-model (filename lm)
   "Read an ARPA LM file into a list of structures, one for each n-gram in the file.  This 'only' goes up to 9-grams."
-  ;;(declare (optimize (speed 3)))
   (let ((order-of-section nil))
     (declare ((or null fixnum) order-of-section))
     (format t "Reading ARPA LM file: ~A.~%" filename)
@@ -137,8 +124,7 @@
 		;; Save the probability and back-off weight
 		(setf (gethash word-seq (ngram-lm-arpa-probability-table lm)) probability)
 		(when backoff-weight
-		  (setf (gethash word-seq (ngram-lm-arpa-backoff-table lm)) backoff-weight))
-		)))))
+		  (setf (gethash word-seq (ngram-lm-arpa-backoff-table lm)) backoff-weight)))))))
       ;; Just take the last section order as the overall order (which may not be correct)
       (setf (order lm) order-of-section)))
 
@@ -161,8 +147,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;; Sampling an n-gram model (i.e. random generation)  ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Sampling an n-gram model (i.e. random generation)")
 
 (defun sample-ngram (n given lm &key (verbose nil))
   "Sample an n-gram LM given some history.  This is the main function to use for sampling from an n-gram model."
@@ -189,12 +173,9 @@
 	(sample-ngram n given lm)
 	(sample-ngram (1- n) (subseq given 1 (length given)) lm))))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Implementing the standard n-gram interface ;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Implementing the standard n-gram interface")
 
 (defmethod log-1gram-prob ((lm ngram-lm-arpa) 1gram)
   (gethash 1gram (ngram-lm-arpa-probability-table lm)))

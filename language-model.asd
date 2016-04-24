@@ -1,11 +1,11 @@
 ;;-*- Mode: Lisp -*-
-;;;; Ben Lambert (ben@benjaminlambert.com)
+;;;; Ben Lambert
+;;;; ben@benjaminlambert.com
 
 (asdf:defsystem "language-model"
   :description "Common Lisp language modeling"
   :version "0.1.0"
   :author "Ben Lambert"
-  :licence "All rights reserved"
   :serial t
   :components
   ((:module src
@@ -19,13 +19,16 @@
 			 (:file "interpolating-lms")
 			 (:file "perplexity")
 			 (:file "vocab")
-			 (:file "vocab-io"))))
-  :depends-on (:lispdoc :blambert-util
-			:cl-ppcre
-			:split-sequence
-			:alexandria
-			:array-operations
-			:cl-fad
-			:metatilities
-			:ieee-floats))
+			 (:file "vocab-io")
+			 (:file "util"))))
+  :depends-on (:cl-ppcre
+	       :split-sequence
+	       :alexandria
+	       :array-operations
+	       :cl-fad
+	       :metatilities
+	       :ieee-floats
+	       :parse-number
+	       :gzip-stream
+	       :gnuplot))
 

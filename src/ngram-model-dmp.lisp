@@ -1,8 +1,6 @@
-;;;; Benjamin E. Lambert (ben@benjaminlambert.com)
+;;;; Ben Lambert (ben@benjaminlambert.com)
 
-(declaim (optimize (debug 3)))
 (in-package :language-model)
-(cl-user::file-summary "Reading binary DMP language models")
 
 (defparameter +darpa-header+ "Darpa Trigram LM"
   "The header string at the beginning of each binary DMP LM.")
@@ -10,8 +8,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;; Representation of the DMP ngram model ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Representation of the DMP ngram model")
 
 (defclass* ngram-lm-dmp (ngram-lm)
   ((version nil ia)
@@ -44,8 +40,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Implementing the standard n-gram interface ;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Implementing the standard n-gram interface")
 
 (defmethod log-1gram-prob ((lm ngram-lm-dmp) 1gram)
   (let ((word (first 1gram)))
@@ -87,8 +81,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Helper functions -- to help find all the probs and bows ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Helper functions -- to help find all the probs and bows")
 
 ;;; 2 GRAMS
 (defmethod get-2gram-search-bounds-internal ((lm ngram-lm-dmp) word)
@@ -148,8 +140,6 @@
 ;;;;;;; Converting among byte, integer, etc. representations ;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(cl-user::section "Converting among byte, integer, etc. representations")
-
 (defun signed-to-unsigned (value size)
   "Return the unsigned representation of a signed byte with a given size.  Size is the number of BYTES."
   (ldb (byte size 0) value))
@@ -175,8 +165,6 @@
 ;;;;;;; Reading/skipping headers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(cl-user::section "Reading/skipping headers.")
-
 (defun read-header-entry (bytes offset &key swap-endianness debug)
   "Read a single header entry from a binary DMP file.  Returns the length in bytes of the header
    that we just read, but not the header itself.  The header itself is discarded."
@@ -199,8 +187,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;; Helper functions to read sequences of ints and floats from byte arrays. ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Helper functions to read sequences of ints and floats from byte arrays.")
 
 (defun subseq2 (seq begin &optional length)
   "Convenience function that lets us call SUBSEQ with an offset and length, rather than a begin and end index.
@@ -245,8 +231,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;; The main functions for reading binary DMP language models ;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "The main functions for reading binary DMP language models")
 
 ;;;; It's also possible to memory map the probabilities...
 ;;;; To implement that see:

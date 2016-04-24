@@ -53,7 +53,7 @@
 
 (defun load-pattern-lm (filename)
   "Load a 'simple' LM."
-  (let* ((model-list (blambert-util::load-object filename))
+  (let* ((model-list (load-object filename))
 	 (parameters (getf model-list :parameters)))
     (setf (getf model-list :parameters)
 	  (make-array (length parameters)  ;; the array has to have the correct type, for efficiency

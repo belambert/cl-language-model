@@ -40,7 +40,7 @@
     (create-ngram-sampling-table lm)
     (sort-probability-table (ngram-lm-arpa-sampling-table lm)))
   (print-lm-stats lm)
-  (setf (vocab lm) (coerce (sort (blambert-util::hash-table-keys (vocab-table lm)) 'string-lessp) 'vector))
+  (setf (vocab lm) (coerce (sort (hash-table-keys (vocab-table lm)) 'string-lessp) 'vector))
   ;; Set the history length from the model's order
   (if (order lm)
       (setf (history-length lm) (1- (order lm)))

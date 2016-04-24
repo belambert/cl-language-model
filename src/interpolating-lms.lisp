@@ -1,9 +1,6 @@
-;;;; Benjamin E. Lambert (ben@benjaminlambert.com)
+;;;; Ben Lambert (ben@benjaminlambert.com)
 
-(declaim (optimize (debug 3)))
 (in-package :language-model)
-(cl-user::file-summary "Interpolate two langauge models [TODO: 3+ LMs, and MaxEnt interpolation.]")
-
 
 (defvar *default-interpolation-epsilon* 1e-3
   "Default epsilon value for when EM should be consider to be converged, and we should stop.")
@@ -11,8 +8,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;; Degenerate-EM alg for interpolation ;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Degenerate-EM algorithm for interpolation")
 
 (defun likelihood (i)
   "Get the likelihood using the current lambda values."
@@ -80,10 +75,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;; Main linear interpolation functions ;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(cl-user::section "Main linear interpolation functions")
-
-(cl-user::todo "These functions should be more consistently named...")
 
 (defun interpolate-two-prob-streams (s1 s2 interpolation-weights)
   "Given two probability streams, and some interpolation weights, create a new linearly
@@ -161,12 +152,10 @@
 ;;;;;;; MaxEnt interpolation of LMs ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(cl-user::section "MaxEnt interpolation of LMs")
 
-(cl-user::todo "MaxEnt interpolation of LM.... this allows one LM to have 'negative' weight.  This is not even close to working.")
-(cl-user::todo "See paper: Log-linear interpolation of language models, by Dietrich Klakow, ~1998")
+;;; TODO "MaxEnt interpolation of LM.... this allows one LM to have 'negative' weight.  This is not even close to working
+;;; TODO "See paper: Log-linear interpolation of language models, by Dietrich Klakow, ~1998
 
-(cl-user::subsection "Basics")
 
 (defvar *normalization-table* (make-hash-table :test 'equalp)
   "The normalization depends on the specific history....?")
@@ -199,9 +188,7 @@
     (print-prob-stream-ppl interpolated-prob-stream)))
 	
 
-(cl-user::subsection "Normalization")
-
-(cl-user::todo "Z depends on the history, so we have to look at all histories, and make sure the next word probabilities sum to one...  ugh.")
+;;; TODO Z depends on the history, so we have to look at all histories, and make sure the next word probabilities sum to one...  ugh.")
 
 (defun get-normalization-score (lm-example p1 p2 lambda1 lambda2)
   "????"
@@ -212,8 +199,5 @@
 	  (let ((term1 (expt p1 lambda1))
 		(term2 (expt p2 lambda2)))
 	    (declare (ignore term1 term2))
-	    ())))
-    ))
-
-
+	    ())))))
 |#

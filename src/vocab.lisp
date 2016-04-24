@@ -213,7 +213,7 @@
 (defun read-frequency-file (filename)
   "Read a frequency file.  This is one line per word with the word, some space and then the count."
   (let ((freq '()))
-    (blambert-util::do-lines (line filename)
+    (do-lines (line filename)
       (setf line (read-from-string line))
       (push line freq))
     (sort freq '> :key 'second)))
@@ -314,7 +314,7 @@
 	    (incf tokens-in-kb this-tokens-in-kb))))
       (format t "Counted ~A tokens in the vocabulary.  ~A of those tokens are in the KB.~%" tokens-in-vocab tokens-in-kb)
       (when save-origins (organize-origin-table origin-table))
-      (let ((count-list (sort (blambert-util::hash-table->list count-table) #'> :key 'second)))
+      (let ((count-list (sort (hash-table->list count-table) #'> :key 'second)))
 	(values count-list origin-table)))))
 
 (defun count-fof (word-list)
@@ -323,7 +323,7 @@
 	(fof-table (make-hash-table)))
     (dolist (pair token-count-list)
       (incf (gethash (second pair) fof-table 0)))
-    (sort (blambert-util::hash-table->list fof-table) '> :key 'second)))
+    (sort (hash-table->list fof-table) '> :key 'second)))
 
 (defun organize-origin-table (origin-table)
   "Call list->count-list on each entry in the origin-table."

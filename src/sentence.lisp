@@ -58,7 +58,7 @@
 				  (concatenate 'string (base-filename filename) *dependency-extension*)))
 	 (dependencies (when (probe-file dependency-filename)
 			 (read-conll-file dependency-filename))))
-    (bl:do-lines (line filename)
+    (do-lines (line filename)
       (unless (string-equal line "")
 	(let* ((str-length (length line))
 	       (begin-id (position #\( line :from-end t))
@@ -66,7 +66,7 @@
 	       (transcript (subseq line 0 (or begin-id (length line))))
 	       ;; The token boundaries are determined by spaces...
 	       (tokens (split-sequence:split-sequence #\Space transcript :remove-empty-subseqs t)))
-	  (map-into tokens 'bl:get-cached-string tokens)
+	  (map-into tokens 'get-cached-string tokens)
 	  (alexandria:coercef tokens 'vector)
 	  ;;(setf example-id (get-cached-string example-id))
 	  (push

@@ -1,11 +1,9 @@
-;;;; Benjamin E. Lambert (ben@benjaminlambert.com)
+;;;; Author: Ben Lambert
+;;;; ben@benjaminlambert.com
 
 ;;;; Functions for combining independent scores in a pattern LM.
 
-(declaim (optimize (debug 3)))
 (in-package :language-model)
-(cl-user::file-summary "Functions for combining independent scores in a pattern LM.")
-
 
 (defun score-max (model sentence)
   "Use the maximum feature weight according to the model as the sentence's score."

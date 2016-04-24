@@ -250,7 +250,7 @@
   (let ((log-prob (ngram-lm-log-prob history lm)))
     (if (= 10 (lm-log-base lm))
 	log-prob
-	(bl::convert-log-prob-from-base-x-to-y log-prob 10 (lm-log-base lm)))))
+	(convert-log-prob-from-base-x-to-y log-prob 10 (lm-log-base lm)))))
 
 (defmethod generate-word ((lm ngram-lm) history)
   "Randomly generate a word given the history."

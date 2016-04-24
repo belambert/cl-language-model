@@ -1,8 +1,8 @@
-;;;; Benjamin E. Lambert (ben@benjaminlambert.com)
+;;;; Ben Lambert (ben@benjaminlambert.com)
 
 (defpackage :language-model
   (:nicknames :lm)
-  (:use :common-lisp :alexandria :split-sequence :blambert-util )
+  (:use :common-lisp :alexandria :split-sequence)
   (:import-from :metatilities :defclass* :defclass-brief)
   (:export :score
 	   :parameters
@@ -18,8 +18,7 @@
 	   :abstraction-functions
 	   :grammar-file
 	   :filler-file	   
-	   :log-prob-of-sentence
-	   ))
+	   :log-prob-of-sentence))
 
 
 

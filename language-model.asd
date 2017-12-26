@@ -1,6 +1,4 @@
 ;;-*- Mode: Lisp -*-
-;;;; Ben Lambert
-;;;; ben@benjaminlambert.com
 
 (asdf:defsystem "language-model"
   :description "Common Lisp language modeling"

@@ -12,7 +12,6 @@
 ;; See the License for the specific language governing permissions and
 ;; limitations under the License.
 
-
 (in-package :language-model)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -29,4 +28,3 @@
 (defun save-vocab (vocab filename)
   "Save a vocabulary (array?) to the specified file."
   (save-object vocab filename))
-

@@ -72,6 +72,3 @@
 	 (setf (elt feature-scores sparse-pattern-index) 0.0d0)
 	 (setf max-score (reduce max-op feature-scores)))
     score-sum))
-
-
-

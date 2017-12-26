@@ -88,5 +88,3 @@
     (setf sentences (nreverse sentences))
     (mapc 'copy-dependency-to-sentence dependencies sentences)
     sentences))
-
-

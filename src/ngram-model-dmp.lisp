@@ -12,7 +12,6 @@
 ;; See the License for the specific language governing permissions and
 ;; limitations under the License.
 
-
 (in-package :language-model)
 
 (defparameter +darpa-header+ "Darpa Trigram LM"
@@ -125,7 +124,6 @@
 	  ;;(format t "~{~:D ~}~%" (coerce (subseq (ngram-lm-dmp-3gram-index lm) low high) 'list))
 	  (binary-search-array (ngram-lm-dmp-3gram-index lm) word3-id :low low :high high))
 	nil)))
-  
 
 ;; HELPER FUNCTIONS
 
@@ -430,8 +428,3 @@
     (assert (= word-count 1gram-count (length words)))
     (set-vocab lm words))
   byte-counter)
-
-
-
-
-  

@@ -12,7 +12,6 @@
 ;; See the License for the specific language governing permissions and
 ;; limitations under the License.
 
-
 (in-package :language-model)
 
 (defun hash-table->list (ht)
@@ -67,5 +66,3 @@
   (let ((divisor (log y x)))
     (declare (float divisor))
     (/ log-prob divisor)))
-
-

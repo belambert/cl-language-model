@@ -12,7 +12,6 @@
 ;; See the License for the specific language governing permissions and
 ;; limitations under the License.
 
-
 (in-package :language-model)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -76,6 +75,3 @@
       (format t "Vocab size:    ~:D~%" (length (vocab model)))
       (format t "Feature count: ~:D~%" (length (parameters model)))
       model)))
-
-
-

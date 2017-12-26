@@ -12,9 +12,9 @@
 ;; See the License for the specific language governing permissions and
 ;; limitations under the License.
 
-
 (in-package :language-model)
 
+;;;; NOTE:
 ;;;; It seems that saving the word sequences as vectors doesn't really save us much RAM space
 ;;;; over lists (I guess because they are so short), so the overhead of keeping a pointer to the
 ;;;; end of the array destroys any gain we get from using arrays rather then lists

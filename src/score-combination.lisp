@@ -15,7 +15,7 @@
 
 ;;;; Functions for combining independent scores in a pattern LM.
 
-(in-package :language-model)
+(in-package :cl-lm)
 
 (defun score-max (model sentence)
   "Use the maximum feature weight according to the model as the sentence's score."

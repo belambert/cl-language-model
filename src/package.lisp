@@ -12,7 +12,7 @@
 ;; See the License for the specific language governing permissions and
 ;; limitations under the License.
 
-(defpackage :language-model
+(defpackage :cl-lm
   (:nicknames :lm)
   (:use :common-lisp :alexandria :split-sequence)
   (:import-from :metatilities :defclass* :defclass-brief)

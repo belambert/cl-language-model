@@ -12,7 +12,7 @@
 ;; See the License for the specific language governing permissions and
 ;; limitations under the License.
 
-(in-package :language-model)
+(in-package :cl-lm)
 
 (defvar *default-interpolation-epsilon* 1e-3
   "Default epsilon value for when EM should be consider to be converged, and we should stop.")

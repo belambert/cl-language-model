@@ -13,7 +13,7 @@
 ;; limitations under the License.
 
 
-(in-package :language-model)
+(in-package :cl-lm)
 
 (defparameter *dependency-extension* ".parsed.gz" 
   "The name of an nbest list after POS tagging and dependency parsing.")

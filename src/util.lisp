@@ -12,7 +12,7 @@
 ;; See the License for the specific language governing permissions and
 ;; limitations under the License.
 
-(in-package :language-model)
+(in-package :cl-lm)
 
 (defun hash-table->list (ht)
   "Convert a hashtable to a list of key value pairs."

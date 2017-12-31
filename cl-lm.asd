@@ -1,6 +1,6 @@
-;;-*- Mode: Lisp -*-
+;; -*- Mode: Lisp -*-
 
-(asdf:defsystem "language-model"
+(asdf:defsystem "cl-lm"
   :description "Common Lisp language modeling"
   :version "0.1.0"
   :author "Ben Lambert"

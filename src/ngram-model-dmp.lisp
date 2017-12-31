@@ -12,7 +12,7 @@
 ;; See the License for the specific language governing permissions and
 ;; limitations under the License.
 
-(in-package :language-model)
+(in-package :cl-lm)
 
 (defparameter +darpa-header+ "Darpa Trigram LM"
   "The header string at the beginning of each binary DMP LM.")

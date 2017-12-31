@@ -35,6 +35,13 @@
       (with-open-file (stream filename :direction :input)
 	(read stream nil))))
 
+(defun file->line-list (filename &key (external-format :utf-8))
+  "Quickly read an entire text file (UTF-8) into memory, and split it up by newlines."
+  (with-open-file (file filename :direction :input :external-format external-format)
+    (let ((char-array (make-array (the fixnum (file-length file)) :element-type 'character)))
+      (read-sequence char-array file)	
+      (split-string #\Newline char-array))))
+
 (defmacro do-lines ((var filename &key (external-format :utf-8)) &body body)
   "Macro that iterates through the lines of a file, binding the line (as a string)
    to the variable name specified.  Reads the entire file into memory quickly up-front."

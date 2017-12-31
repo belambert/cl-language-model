@@ -117,7 +117,7 @@
   (let ((order-of-section nil))
     (declare ((or null fixnum) order-of-section))
     (format t "Reading ARPA LM file: ~A.~%" filename)
-    (do-lines-fast (line filename)
+    (do-lines (line filename)
       ;; This reads the beginning of a section...that is e.g.: \2=gram
       (if (ngram-section-start-p line)
 	  (setf order-of-section (extract-order-from-line line))	  

@@ -1,0 +1,4 @@
+- Remove semlm-specific stuff, like POS features.
+- Better function names?
+- Examples of how to use in README.
+
